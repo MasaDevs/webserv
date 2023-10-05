@@ -40,20 +40,20 @@ int transfer( int sock ) {
 
 		if ( strcmp(recv_buf, "finish") == 0 ) {
 			send_buf = 0;
-			send_size = send(sock, &send_buf, 1, 0);
+			send_size = send(sock, send_buf, 1, 0);
 			if ( send_size == -1 ) {
 				std::cout << "send error\n";
 				break;
 			}
 			break;
 		} else {
-			send_buf = 1;
-			send_size = send(sock, &send_buf, 1, 0);
+			send_size = send( sock, recv_buf, strlen(recv_buf) + 1, 0);
 			if ( send_size == -1 ) {
 				std::cout << "send error\n";
 				break;
 			}
 		}
+
 	}
 	return 0; 
 }
@@ -125,6 +125,7 @@ int main ( ) {
 			return -1;
 		}
 		std::cout << "Connected\n";
+		std::cout << "test" << std::endl;
 
 		transfer(c_sock);
 

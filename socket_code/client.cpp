@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <iostream>
 
 #define SERVER_ADDR "127.0.0.1"
 #define SERVER_PORT 8080
@@ -45,6 +46,8 @@ int transfer(int sock) {
             printf("Finish connection\n");
             break;
         }
+
+		std::cout << recv_buf << std::endl;
     }
     return 0;
 }
