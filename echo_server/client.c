@@ -1,65 +1,88 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
-#define PORT 8080
-#define BUFFER_SIZE 1024
-#define SERVER_ADDR "127.0.0.1"  // このアドレスはサーバが動作するマシンのアドレスに変更してください
+#define SERVER_ADDR "127.0.0.1"
+#define SERVER_PORT 8080
+#define BUF_SIZE 1024
 
-int main() {
-    int client_socket;
-    struct sockaddr_in server_address;
-    char buffer[BUFFER_SIZE];
+int transfer(int);
 
-    // ソケットの作成
-    if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("socket failed");
-        exit(EXIT_FAILURE);
-    }
-
-    server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(PORT);
-
-    // サーバのIPアドレスを設定
-    if (inet_pton(AF_INET, SERVER_ADDR, &server_address.sin_addr) <= 0) {
-        printf("Invalid address/ Address not supported\n");
-        return -1;
-    }
-
-    // サーバに接続
-    if (connect(client_socket, (struct sockaddr *)&server_address, sizeof(server_address)) < 0) {
-        perror("connect failed");
-        exit(EXIT_FAILURE);
-    }
-
-    printf("Connected to server!\n");
+int transfer(int sock) {
+    char send_buf[BUF_SIZE], recv_buf;
+    int send_size, recv_size;
 
     while (1) {
-        printf("Enter message: ");
-        fgets(buffer, BUFFER_SIZE, stdin);
 
-        // メッセージをサーバに送信
-        send(client_socket, buffer, strlen(buffer), 0);
+        /* サーバーに送る文字列を取得 */
+        printf("Input Message...\n");
+        scanf("%s", send_buf);
 
-        memset(buffer, 0, BUFFER_SIZE);  // バッファをクリア
-        int valread = recv(client_socket, buffer, BUFFER_SIZE, 0);
-
-        if (valread <= 0) {
-            printf("Server disconnected or error occurred.\n");
-            close(client_socket);
+        /* 文字列を送信 */
+        send_size = send(sock, send_buf, strlen(send_buf) + 1, 0);
+        if (send_size == -1) {
+            printf("send error\n");
             break;
         }
 
-        buffer[valread] = '\0';
-        printf("Server reply: %s", buffer);
-    }
+        /* サーバーからの応答を受信 */
+        recv_size = recv(sock, &recv_buf, 1, 0);
+        if (recv_size == -1) {
+            printf("recv error\n");
+            break;
+        }
+        if (recv_size == 0) {
+            /* 受信サイズが0の場合は相手が接続閉じていると判断 */
+            printf("connection ended\n");
+            break;
+        }
 
+        /* 応答が0の場合はデータ送信終了 */
+        if (recv_buf == 0) {
+            printf("Finish connection\n");
+            break;
+        }
+    }
     return 0;
 }
 
+int main(void) {
+    int sock;
+    struct sockaddr_in addr;
+
+
+    /* ソケットを作成 */
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock == -1) {
+        printf("socket error\n");
+        return -1;
+    }
+
+    /* 構造体を全て0にセット */
+    memset(&addr, 0, sizeof(struct sockaddr_in));
+
+    /* サーバーのIPアドレスとポートの情報を設定 */
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons((unsigned short)SERVER_PORT);
+    addr.sin_addr.s_addr = inet_addr(SERVER_ADDR);
+
+    /* サーバーに接続要求送信 */
+    printf("Start connect...\n");
+    if (connect(sock, (struct sockaddr*)&addr, sizeof(struct sockaddr_in)) == -1) {
+        printf("connect error\n");
+        close(sock);
+        return -1;
+    }
+    printf("Finish connect!\n");
+
+    /* 接続済のソケットでデータのやり取り */
+    transfer(sock);
+
+    /* ソケット通信をクローズ */
+    close(sock);
+
+    return 0;
+}
