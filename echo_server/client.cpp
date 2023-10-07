@@ -1,59 +1,74 @@
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <iostream>
 
 #define SERVER_ADDR "127.0.0.1"
 #define SERVER_PORT 8080
 #define BUF_SIZE 1024
 #define BUFFER_SIZE 80
 
-#define TRUE 1
-#define FALSE 0
+int main(int argc, char* argv[]) {
+	int client_socket, rc;
+	struct sockaddr_in server_addr;
+	char buffer[BUFFER_SIZE];
 
-int main() {
-  int client_sd, bytes_sent, bytes_received;
-  struct  sockaddr_in addr;
-  char send_buffer[BUFFER_SIZE];
-  char recv_buffer[BUFFER_SIZE];
-  
-  client_sd = socket(AF_INET, SOCK_STREAM, 0);
-  if (client_sd < 0) {
-    perror("socket() failed");
-    exit(1);
-  }
+	// ソケットの作成
+	client_socket = socket(AF_INET, SOCK_STREAM, 0);
+	if (client_socket < 0) {
+		perror("socket() failed");
+		exit(-1);
+	}
 
-  memset(&addr, 0, sizeof(addr));
-  addr.sin_family = AF_INET;
-  inet_pton(AF_INET, SERVER_ADDR, &(addr.sin_addr));
-  addr.sin_port = htons(SERVER_PORT);
+	// サーバーアドレスの設定
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+	if (inet_pton(AF_INET, SERVER_ADDR, &(server_addr.sin_addr)) <= 0) {
+		perror("inet_pton() failed");
+		close(client_socket);
+		exit(-1);
+	}
+	server_addr.sin_port = htons(SERVER_PORT);
 
-  if (connect(client_sd, (struct sockaddr *)&addr, sizeof(addr)) < 0 ) {
-    perror("connect() failed");
-    close(client_sd);
-    exit(1);
-  }
+	// サーバーに接続
+	if (connect(client_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+		perror("connect() failed");
+		close(client_socket);
+		exit(-1);
+	}
 
-  std::cout << "Connect to server. Enter a message: " ;
-  fgets(send_buffer, BUFFER_SIZE, stdin);
+	printf("Connected to server. Enter a message to send:\n");
+	while (1) {
+		// ユーザーからの入力を読み取る
+		fgets(buffer, sizeof(buffer), stdin);
 
-  bytes_sent = send(client_sd, send_buffer, strlen(send_buffer), 0);
-  
+		// サーバーにメッセージを送信
+		rc = send(client_socket, buffer, strlen(buffer), 0);
+		if (rc < 0) {
+			perror("send() failed");
+			close(client_socket);
+			exit(-1);
+		}
 
-  if (bytes_sent <= 0) {
-    perror("send() failed");
-    close(client_sd);
-    exit(-1);
-  }
+		// サーバーからの返信を受信
+		rc = recv(client_socket, buffer, sizeof(buffer), 0);
+		if (rc < 0) {
+			perror("recv() failed");
+			close(client_socket);
+			exit(-1);
+		} else if (rc == 0) {
+			printf("Server closed the connection.\n");
+			break;
+		}
 
-  bytes_received = recv(client_sd, recv_buffer, BUFFER_SIZE, 0);
-  if (bytes_received > 0) {
-    recv_buffer[bytes_received] = '\0';
-    std::cout << "Received from server: " << recv_buffer;
-  } else {
-    perror("recv() failed");
-  }
+		buffer[rc] = '\0';
+		printf("Received from server: %s", buffer);
+	}
 
-  close(client_sd);
+	close(client_socket);
+	return 0;
 }
