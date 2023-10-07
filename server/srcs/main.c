@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	}
 	server_address = argv[1];
 	port_number = (unsigned short)strtol(argv[2], 0, 10);
-	echo_server(server_address, port_number);
+	echo_select_server(server_address, port_number);
 	return (0);
 }
 

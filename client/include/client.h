@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 
 //echo_client.c
-int echo_client(char *server, unsigned short port_number, char *message);
+int echo_client(char *server, unsigned short port_number);
 
 //echo_receive_reply.c
 int echo_receive_reply(int socketfd, char read_buffer[], size_t buffer_size);

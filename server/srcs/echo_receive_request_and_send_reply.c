@@ -6,6 +6,7 @@ ssize_t	echo_receive_request_and_send_reply(int connection_socket)
 	char	read_buffer[BUFFER_SIZE];
 	ssize_t	response;
 
+	memset(read_buffer, '\0', BUFFER_SIZE);
 	response = recv(connection_socket, read_buffer, BUFFER_SIZE, 0);
 	if (response < 0)
 	{
