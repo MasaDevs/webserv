@@ -13,12 +13,13 @@ ssize_t	echo_receive_request_and_send_reply(int connection_socket)
 		fprintf(stderr, "recv error\n");
 		return (-1);
 	}
-	response = send(connection_socket, read_buffer, BUFFER_SIZE, 0);
+	response = send(connection_socket, read_buffer, strlen(read_buffer), 0);
 	if (response < 0)
 	{
 		fprintf(stderr, "send error\n");
 		return (-1);
 	}
+	printf("debug: %ld\n", response);
 	return (response);
 }
 

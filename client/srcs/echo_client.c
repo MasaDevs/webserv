@@ -18,8 +18,9 @@ int echo_client(char *server_address, unsigned short port_number)
 // send request to server
 	while(1)
 	{
+		memset(write_buffer, '\0', BUFFER_SIZE);
 		scanf("%s", write_buffer);
-		if (write_buffer[0] == EOF)
+		if (!strlen(write_buffer))
 			break;
 		response = echo_send_request(socketfd, write_buffer);
 		if (response < 0)
