@@ -25,6 +25,7 @@ int echo_client(char *server_address, unsigned short port_number)
 		if (response < 0)
 		{
 			fprintf(stderr, "echo_send_request()\n");
+			close(socketfd);
 			return (1);
 		}
 		printf("send: %d bytes message: [%s]\n", response, write_buffer);
@@ -34,9 +35,11 @@ int echo_client(char *server_address, unsigned short port_number)
 		if (response < 0)
 		{
 			fprintf(stderr, "echo_receive_reply()\n");
+			close(socketfd);
 			return (1);
 		}
 		printf("received: %d bytes message: [%s]\n", response, read_buffer);
 	}
+	close(socketfd);
 	return (0);
 }
