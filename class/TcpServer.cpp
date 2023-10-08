@@ -12,7 +12,7 @@ http::TcpServer::TcpServer(const char* server_addr, int port, int max_clients)
 }
 
 http::TcpServer::~TcpServer() {
-	std::cout << "TcpServer default destractor call."  << std::endl;
+	std::cout << "TcpServer default destractor call." << std::endl;
 	for (int i = 0; i <= max_sd_; ++i) {
 		if (FD_ISSET(i, &master_set_))
 			close(i);
@@ -46,32 +46,32 @@ int http::TcpServer::start() {
 
 		int desc_ready = rc;
 
-		for (int i=0; i <= max_sd_ && desc_ready > 0; ++i) {
+		for (int i = 0; i <= max_sd_ && desc_ready > 0; ++i) {
 			if (FD_ISSET(i, &working_set_)) {
 				--desc_ready;
 				if (i == this->server_socket_.getListenSd()) {
 					std::cout << "  Listening socket is readable" << std::endl;
 					int new_sd = 0;
 					while (new_sd != -1) {
-							new_sd = accept(this->server_socket_.getListenSd(), NULL, NULL);
-							if (new_sd < 0) {
-									if (errno != EWOULDBLOCK) {
-											std::cerr << "accept() failed: " << strerror(errno) << std::endl;
-											end_server = TRUE;
-									}
-									break;
+						new_sd = accept(this->server_socket_.getListenSd(), NULL, NULL);
+						if (new_sd < 0) {
+							if (errno != EWOULDBLOCK) {
+								std::cerr << "accept() failed: " << strerror(errno) << std::endl;
+								end_server = TRUE;
 							}
-							
-							std::cout << "  New incoming connection -  " << new_sd << std::endl;
-							FD_SET(new_sd, &master_set_);
-							if (new_sd > max_sd_)
-									max_sd_ = new_sd;
+							break;
+						}
+
+						std::cout << "  New incoming connection -  " << new_sd << std::endl;
+						FD_SET(new_sd, &master_set_);
+						if (new_sd > max_sd_)
+							max_sd_ = new_sd;
 					}
-					
+
 				} else {
 					std::cout << "  Descriptor " << i << " is readable" << std::endl;
 					int close_conn = FALSE;
-					while ( TRUE ) {
+					while (TRUE) {
 						rc = ::recv(i, buffer_, sizeof(buffer_), 0);
 						if (rc < 0) {
 							if (errno != EWOULDBLOCK) {
@@ -84,15 +84,15 @@ int http::TcpServer::start() {
 						if (rc == 0) {
 							std::cout << "Connection closed." << std::endl;
 							close_conn = TRUE;
-							break; 
+							break;
 						}
-						
+
 						int len = rc;
 						std::cout << "  " << len << " bytes received" << std::endl;
 
 						rc = ::send(i, buffer_, len, 0);
 						if (rc < 0) {
-							std::cerr << "send() failed: " << strerror(errno) << std::endl; 
+							std::cerr << "send() failed: " << strerror(errno) << std::endl;
 							close_conn = TRUE;
 							break;
 						}

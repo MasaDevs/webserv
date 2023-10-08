@@ -25,13 +25,12 @@ private:
 	int set();
 	int connect();
 
-
 public:
 	ClientSocket(const char* server_addr, int port);
 	~ClientSocket();
 	int initialize();
-	const char *getServerAddr_() const;
-	int getPort_() const ;
+	const char* getServerAddr_() const;
+	int getPort_() const;
 	int getClientSocket() const;
 };
 }

@@ -1,3 +1,4 @@
+#include "ClientSocket.hpp"
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -6,7 +7,6 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "ClientSocket.hpp"
 
 #define SERVER_ADDR "127.0.0.1"
 #define SERVER_PORT 8081
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 	char buffer[BUFFER_SIZE];
 
 	http::ClientSocket client_socket(SERVER_ADDR, SERVER_PORT);
-	if (client_socket.initialize() < 0 )
+	if (client_socket.initialize() < 0)
 		return -1;
 
 	printf("Connected to server. Enter a message to send:\n");

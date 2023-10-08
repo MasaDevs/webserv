@@ -33,8 +33,8 @@ public:
 	ServerSocket(const char* server_addr, int port);
 	~ServerSocket();
 	int initialize();
-	const char *getServerAddr_() const;
-	int getPort_() const ;
+	const char* getServerAddr_() const;
+	int getPort_() const;
 	int getListenSd() const;
 };
 }

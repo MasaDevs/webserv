@@ -6,7 +6,7 @@ http::ServerSocket::ServerSocket(const char* server_addr, int port)
 	, listen_sd_(-1)
 	, backlog_(30) {
 	memset(&addr, 0, sizeof(addr));
-	}
+}
 
 http::ServerSocket::~ServerSocket() {
 	std::cout << "ServerSocket default destractor call listen_sd_: " << listen_sd_ << std::endl;
@@ -81,24 +81,30 @@ int http::ServerSocket::listen() {
 }
 
 int http::ServerSocket::initialize() {
-	if(this->socket() < 0)
+	if (this->socket() < 0)
 		return -1;
-	if(this->setsockopt() < 0)
+	if (this->setsockopt() < 0)
 		return -1;
-	if(this->nonBlock() < 0)
+	if (this->nonBlock() < 0)
 		return -1;
-	if(this->setSockaddr() < 0)
+	if (this->setSockaddr() < 0)
 		return -1;
-	if(this->bind() < 0)
+	if (this->bind() < 0)
 		return -1;
-	if(this->listen() < 0)
+	if (this->listen() < 0)
 		return -1;
-	
+
 	return 0;
 }
 
-const char * http::ServerSocket::getServerAddr_() const { return this->server_addr_ ; }
+const char* http::ServerSocket::getServerAddr_() const {
+	return this->server_addr_;
+}
 
-int http::ServerSocket::getPort_() const  { return this->port_ ; }
+int http::ServerSocket::getPort_() const {
+	return this->port_;
+}
 
-int http::ServerSocket::getListenSd() const { return this->listen_sd_ ; }
+int http::ServerSocket::getListenSd() const {
+	return this->listen_sd_;
+}
