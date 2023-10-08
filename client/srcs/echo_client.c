@@ -19,6 +19,7 @@ int echo_client(char *server_address, unsigned short port_number)
 	while(1)
 	{
 		memset(write_buffer, '\0', BUFFER_SIZE);
+		memset(read_buffer, '\0', BUFFER_SIZE);
 		scanf("%s", write_buffer);
 		if (!strlen(write_buffer))
 			break;
