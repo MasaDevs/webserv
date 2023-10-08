@@ -51,10 +51,8 @@ int http::TcpServer::start() {
 				--desc_ready;
 				if (i == this->server_socket_.getListenSd()) {
 					std::cout << "  Listening socket is readable" << std::endl;
-					// 初期状態としてnew_sdを0に設定
 					int new_sd = 0;
 					while (new_sd != -1) {
-							// 接続は確認された時新しい接続は確認された時, acceptする.
 							new_sd = accept(this->server_socket_.getListenSd(), NULL, NULL);
 							if (new_sd < 0) {
 									if (errno != EWOULDBLOCK) {
@@ -69,24 +67,6 @@ int http::TcpServer::start() {
 							if (new_sd > max_sd_)
 									max_sd_ = new_sd;
 					}
-
-					// do {
-          //   // 接続は確認された時新しい接続は確認された時, acceptする.
-					// 	new_sd = accept(this->server_socket_.getListenSd(), NULL, NULL);
-					// 	if (new_sd < 0) {
-					// 		if (errno != EWOULDBLOCK) {
-					// 			std::cerr << "accept() failed" << strerror(errno) << std::endl;
-					// 			end_server = TRUE;
-					// 		}
-					// 		break;
-					// 	}
-						
-					// 	std::cout << "  New incoming connection -  " << new_sd << std::endl;
-					// 	FD_SET(new_sd, &master_set_);
-					// 	if (new_sd > max_sd_)
-					// 		max_sd_ = new_sd;
-
-					// } while (new_sd != -1);
 					
 				} else {
 					std::cout << "  Descriptor " << i << " is readable" << std::endl;

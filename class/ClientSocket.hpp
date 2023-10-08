@@ -1,5 +1,5 @@
-#ifndef SERVER_SOCKET_HPP
-#define SERVER_SOCKET_HPP
+#ifndef CLIENT_SOCKET_HPP
+#define CLIENT_SOCKET_HPP
 
 #include <arpa/inet.h>
 #include <cerrno>
@@ -13,29 +13,26 @@
 
 namespace http {
 
-class ServerSocket {
+class ClientSocket {
 private:
 	const char* server_addr_;
 	const int port_;
-	int listen_sd_;
-	int backlog_;
-	struct sockaddr_in addr;
+	int client_socket_;
+	struct sockaddr_in addr_;
 
-	ServerSocket();
+	ClientSocket();
 	int socket();
-	int setsockopt();
-	int nonBlock();
-	int setSockaddr();
-	int bind();
-	int listen();
+	int set();
+	int connect();
+
 
 public:
-	ServerSocket(const char* server_addr, int port);
-	~ServerSocket();
+	ClientSocket(const char* server_addr, int port);
+	~ClientSocket();
 	int initialize();
 	const char *getServerAddr_() const;
 	int getPort_() const ;
-	int getListenSd() const;
+	int getClientSocket() const;
 };
 }
 
