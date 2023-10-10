@@ -11,13 +11,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#define SERVER_ADDR "127.0.0.1"
-#define SERVER_PORT 8081
-#define BUF_SIZE 1024
-
-#define TRUE 1
-#define FALSE 0
-
 #include "TcpServer.hpp"
 
 int main() {

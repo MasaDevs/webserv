@@ -7,16 +7,12 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#define SERVER_ADDR "127.0.0.1"
-#define SERVER_PORT 8081
-#define BUF_SIZE 1024
-#define BUFFER_SIZE 80
+#include "TcpServer.hpp"
 
 int main(int argc, char* argv[]) {
 	int rc;
 	struct sockaddr_in server_addr;
-	char buffer[BUFFER_SIZE];
+	char buffer[BUF_SIZE];
 
 	http::ClientSocket client_socket(SERVER_ADDR, SERVER_PORT);
 	if (client_socket.initialize() < 0)
