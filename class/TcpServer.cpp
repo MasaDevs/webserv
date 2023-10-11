@@ -96,6 +96,7 @@ int http::TcpServer::start() {
 							close_conn = TRUE;
 							break;
 						}
+						// sleep(1);
 					};
 
 					if (close_conn) {
