@@ -20,7 +20,7 @@
 
 #define SERVER_ADDR "127.0.0.1"
 #define SERVER_PORT 8081
-#define BUF_SIZE 10
+#define BUF_SIZE 100
 
 #define TRUE 1
 #define FALSE 0

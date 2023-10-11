@@ -39,6 +39,7 @@ int main(int argc, char* argv[]) {
 
 		buffer[rc] = '\0';
 		printf("Received from server: %s", buffer);
+		fflush(stdout);
 	}
 
 	return 0;
