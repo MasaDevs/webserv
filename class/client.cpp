@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 #define SERVER_ADDR "127.0.0.1"
-#define SERVER_PORT 8081
+#define SERVER_PORT 8080
 #define BUF_SIZE 1024
 #define BUFFER_SIZE 80
 
