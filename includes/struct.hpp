@@ -14,7 +14,7 @@ enum RequestProcessStatus {
 	CGI,
 	CGI_SEND_BODY,
 	CGI_EXEC,
-	SEND,
+	SENDING,
 	FINISH,
 	ERROR,
 	UNDEFINED,

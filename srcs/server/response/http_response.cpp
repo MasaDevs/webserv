@@ -37,7 +37,7 @@ RequestProcessStatus HttpResponse::setSendBuffer(char* buffer, size_t max_buffer
 
 	std::memcpy(buffer, buf.c_str(), buf.size());
 	if (buf.size() == max_buffer_size - 1)
-		return SEND;
+		return SENDING;
 
 	return FINISH;
 }

@@ -171,6 +171,8 @@ int IoMultiplexing::send(int sd) {
 
 	std::map<int, HttpResponse>::iterator it = response_.find(sd);
 
+	//ここで初めてcreateResponseで得た情報をもとにファイルをreadする。
+	//ファイルを読みきった場合にのみFINISHフラグを立てる。
 	request_process_status_[sd] = it->second.setSendBuffer(buffer, BUFFER_SIZE);
 
 	std::cout << buffer << std::endl;
@@ -216,11 +218,14 @@ void IoMultiplexing::setResponseStatus(int sd) {
 
 int IoMultiplexing::createResponse(int sd) {
 	if (request_process_status_[sd] == RESPONSE) {
-		HttpResponse response;
+		// ここはrequestを読み終わった直後しかこない。　基本的にはGET, POST, DELETEの処理と基礎的なresponseのセットのみ。
+		HttpRequest		request = http_request_parse_.getHttpRequest(sd);
+		HttpResponse	response;
 		response_[sd] = response;
+		//response_[sd] = exec_request(request); exec_requestはrequestを処理し、それに必要なresponseの情報をconfからもらってsetする。
 	} else if (request_process_status_[sd] == CGI) {
 	}
-	request_process_status_[sd] = SEND;
+	request_process_status_[sd] = SENDING;
 	FD_SET(sd, &master_write_fds_);
 	return 0;
 }
@@ -272,7 +277,8 @@ int IoMultiplexing::select() {
 			} else if (FD_ISSET(sd, &write_fds_)) {
 				// TODO
 				//  if (request_process_status_[sd] == CGI_LOCAL_REDIRECT) {}
-				if (request_process_status_[sd] == SEND) {
+				// ここでsendの判断をする。
+				if (request_process_status_[sd] == SENDING) {
 					send(sd);
 				}
 				--desc_ready;
