@@ -248,22 +248,8 @@ sockaddr_in HttpRequest::getServerAddress() const {
 	return server_address_;
 }
 
-std::string HttpRequest::getHttpMethod() const {
-	std::string method;
-	switch (method_) {
-		case http_method::GET:
-			method = "GET";
-			break;
-		case http_method::POST:
-			method = "POST";
-			break;
-		case http_method::DELETE:
-			method = "DELETE";
-			break;
-		default:
-			method = std::string("");
-	}
-	return method;
+http_method::HTTP_METHOD HttpRequest::getHttpMethod() const {
+	return (method_);
 }
 
 std::string HttpRequest::getServerProtocol() const {

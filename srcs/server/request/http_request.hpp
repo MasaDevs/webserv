@@ -101,7 +101,7 @@ public:
 	http_body_message_type::HTTP_BODY_MESSAGE_TYPE getHttpBodyMessageType(void);
 	sockaddr_in getClientAddress() const;
 	sockaddr_in getServerAddress() const;
-	std::string getHttpMethod() const;
+	http_method::HTTP_METHOD getHttpMethod() const;
 	std::string getServerProtocol() const;
 	std::string getRequestPath() const;
 	std::string getBody() const;
